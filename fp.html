@@ -1,30 +1,28 @@
 <body></body>
 <script src="/three.js"></script>
+<script src="/controls/FlyControls.js"></script>
 <script>
-  // The "scene" is where stuff in our game will happen:
   var scene = new THREE.Scene();
   var flat = {flatShading: true};
   var light = new THREE.AmbientLight('white', 0.8);
   scene.add(light);
-
-  // The "camera" is what sees the stuff:
   var aspectRatio = window.innerWidth / window.innerHeight;
   var camera = new THREE.PerspectiveCamera(75, aspectRatio, 1, 10000);
   camera.position.z = 500;
   scene.add(camera);
-
-  // The "renderer" draws what the camera sees onto the screen:
   var renderer = new THREE.WebGLRenderer({antialias: true});
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
-
-  // ******** START CODING ON THE NEXT LINE ********
-
+var controls = new THREE.FlyControls(camera);
+controls.movementSpeed = 100;
+controls.rollSpeed = 0.5;
+controls.dragToLook = true;
+controls.autoForward = false;
+var clock = new THREE.Clock();
 var shape = new THREE.SphereGeometry(100, 50, 50);
 var cover = new THREE.MeshNormalMaterial(flat);
 var ball = new THREE.Mesh(shape, cover);
 scene.add(ball);
-
 var hand = new THREE.SphereGeometry(50, 50, 50);
 var righthand = new THREE.Mesh(hand, cover);
 var lefthand = new THREE.Mesh(hand, cover);
@@ -38,10 +36,8 @@ ball.add(lefthand);
 ball.add(righthand);
 ball.add(leftfoot);
 ball.add(rightfoot);
-
 var cartwheeling = false;
 var flipping = false;
-
 function animate() {
       requestAnimationFrame(animate);
 if (cartwheeling == true) {
@@ -50,24 +46,21 @@ if (cartwheeling == true) {
 if (flipping == true) {
   ball.rotation.x = ball.rotation.x + 0.05;
 }
-
+  var delta = clock.getDelta();
+  controls.update(delta);
   renderer.render(scene, camera);
 }
-
 animate();
-
 document.addEventListener('keydown', function(event) {
   var code = event.code;
   if (code == 'ArrowLeft') ball.position.x = ball.position.x - 5;
   if (code == 'ArrowRight') ball.position.x = ball.position.x + 5;
   if (code == 'ArrowUp') ball.position.z = ball.position.z - 5;
   if (code == 'ArrowDown') ball.position.z = ball.position.z + 5;
-
   if (code == 'ArrowLeft') marker.position.x = marker.position.x - 5;
   if (code == 'ArrowRight') marker.position.x = marker.position.x + 5;
   if (code == 'ArrowUp') marker.position.z = marker.position.z - 5;
   if (code == 'ArrowDown') marker.position.z = marker.position.z + 5;
-
   if (code == 'KeyC' && cartwheeling == false) {
     cartwheeling = true;
   }
@@ -75,7 +68,6 @@ document.addEventListener('keydown', function(event) {
     flipping = true;
   }
 });
-
 function spwnt (x, z) {
   var trunk = new THREE.Mesh(
     new THREE.CylinderGeometry(50,50,200),
@@ -92,36 +84,29 @@ spwnt(400, 100);
 spwnt(-200, 200);
 spwnt(400, 300);
 spwnt(-100, 500);
-
 var marker = new THREE.Object3D();
-marker.add(camera);
 scene.add(marker);
 marker.add(ball);
-
-var pshape = new THREE.SphereGeometry(700);
+function spwnp(x, y, z) {
+  var pshape = new THREE.SphereGeometry(100, 100, 100);
 var pcover = new THREE.MeshNormalMaterial({color:'yellow'});
 var p = new THREE.Mesh(pshape, pcover);
-p.position.set(500, 700, -1500);
+p.position.set((Math.random()*x)-683, (Math.random()*y)-384, (Math.random()*z)-700);
 scene.add(p);
-
-var controls = new THREE.FlyControls(camera);
-controls.movementSpeed = 100;
-controls.rollSpeed = 0.5;
-controls.dragToLook = true;
-controls.autoForward = false;
-
-var clock = new THREE.Clock();
-/*
-function animate() {
-  var delta = clock.getDelta();
-  controls.update(delta);
-
-  renderer.render(scene, camera);
-        requestAnimationFrame(animate);
 }
-*/
-
-
-  // Now, show what the camera sees on the screen:
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
   renderer.render(scene, camera);
 </script>
+
