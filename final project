@@ -1,0 +1,260 @@
+ds<body></body>
+<script src="/three.js"></script>
+<script src="/tween.js"></script>
+<script src="/controls/FlyControls.js"></script>
+<script>
+// var controls;
+  // The "scene" is where stuff in our game will happen:
+  var scene = new THREE.Scene();
+  var flat = {flatShading: true};
+  var light = new THREE.AmbientLight('white', 0.8);
+  scene.add(light);
+
+  // The "camera" is what sees the stuff:
+  var aspectRatio = window.innerWidth / window.innerHeight;
+  var camera = new THREE.PerspectiveCamera(75, aspectRatio, 1, 10000);
+  camera.position.z = 500;
+  scene.add(camera);
+
+  // The "renderer" draws what the camera sees onto the screen:
+  var renderer = new THREE.WebGLRenderer({antialias: true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+// controls = new THREE.OrbitControls( camera );
+// controls.addEventListener( 'keyUp', render );
+  // ******** START CODING ON THE NEXT LINE ********
+var direction;
+var tween;
+var wlkngl = false;
+var wlkngr = false;
+var wlkngf = false;
+var wlkngb = false;
+var position;
+
+function turn() {
+  var tween = new TWEEN.Tween(ball.rotation);
+  if (wlkngf == true) direction = Math.PI;
+  if (wlkngb == true) direction = 0;
+  if (wlkngl == true) direction = Math.PI/2;
+  if (wlkngr == true) direction = -Math.PI/2
+  /*
+  var tween = new TWEEN.Tween(ball.rotation);
+  tween.to({y:Math.PI;}, 500);
+  tween.to({y:0}, 500);
+  tween.to({y:direction}, 500);
+  tween.to({y:direction}, 500);
+  tween.to({y:direction}, 500);
+  tween.start();
+  */
+}
+
+function wlkng() {
+  if (wlkngf == true) return true;
+  if (wlkngb == true) return true;
+  if (wlkngl == true) return true;
+  if (wlkngr == true) return true;
+  return false;
+}
+
+var controls = new THREE.FlyControls(camera);
+controls.movementSpeed = 100;
+controls.rollSpeed = 0.5;
+controls.dragToLook = true;
+controls.autoForward = false;
+var clock = new THREE.Clock();
+
+var shape = new THREE.SphereGeometry(100, 50, 50);
+var cover = new THREE.MeshNormalMaterial(flat);
+var ball = new THREE.Mesh(shape, cover);
+
+var hand = new THREE.SphereGeometry(50, 50, 50);
+var righthand = new THREE.Mesh(hand, cover);
+var lefthand = new THREE.Mesh(hand, cover);
+var leftfoot = new THREE.Mesh(hand, cover);
+var rightfoot = new THREE.Mesh(hand, cover);
+righthand.position.set(-150, 0, 0);
+lefthand.position.set(150,0,0);
+leftfoot.position.set(60,-140,0);
+rightfoot.position.set(-60,-140,0);
+ball.add(lefthand);
+ball.add(righthand);
+ball.add(leftfoot);
+ball.add(rightfoot);
+
+var cartwheeling;
+var flipping;
+
+function acros() {
+  if (cartwheeling == true) {
+  ball.rotation.z = ball.rotation.z + 0.05;
+}
+ if (flipping == true) {
+  ball.rotation.x = ball.rotation.x + 0.05;
+}
+  if (cartwheeling == false) {
+  ball.rotation.z = 0;
+}
+ if (flipping == false) {
+  ball.rotation.x = 0;
+}
+ }
+
+function walk() {
+  var speed = 10;
+  var size = 100;
+  var time = clock.getElapsedTime();
+  
+  position = Math.sin(speed * time) * size;
+  
+  righthand.position.z = position;
+  lefthand.position.z = -position;
+  rightfoot.position.z = -position;
+  leftfoot.position.z = position;
+  
+  ball.rotation.y = direction;
+  
+  tween = new TWEEN.Tween(ball.rotation);
+  tween.to({y: direction}, 1000);
+  tween.start();
+}
+
+function nwalk() {
+  position = 0;
+  righthand.position.z = position;
+  lefthand.position.z = -position;
+  rightfoot.position.z = -position;
+  leftfoot.position.z = position;
+}
+
+function animate() {
+  TWEEN.update();
+  requestAnimationFrame(animate);
+  var delta = clock.getDelta();
+  acros();
+  controls.update(delta);
+  renderer.render(scene, camera);
+  if (wlkng() == true) {
+    walk();
+  }
+  if (wlkng() == false) {
+    nwalk();
+  }
+  turn();
+}
+
+animate();
+
+document.addEventListener('keydown', function(event) {
+  var code = event.code;
+  if (code == 'KeyJ') {
+    marker.position.x = marker.position.x - 10;
+    wlkngr = true;
+  }
+  if (code == 'KeyL') {
+    marker.position.x = marker.position.x + 10;
+    wlkngl = true;
+  }
+  if (code == 'KeyI') {
+    marker.position.z = marker.position.z - 10;
+    wlkngf = true;
+  }
+  if (code == 'KeyK') {
+    marker.position.z = marker.position.z + 10;
+    wlkngb = true;
+  }
+
+  if (code == 'KeyC' && cartwheeling == false) {
+    cartwheeling = true;
+  }
+  if (code == 'KeyF' && flipping == false) {
+    flipping = true;
+  }
+  
+    if (code == 'KeyC' && cartwheeling == true) {
+    cartwheeling = false;
+  }
+  if (code == 'KeyF' && flipping == true) {
+    flipping = false;
+  }
+});
+
+document.addEventListener('keypress', function(event) {
+  var code = event.code;
+  if (code == 'KeyC') {
+    cartwheeling = true;
+    ball.rotation.z = ball.rotation.z + 0.05;
+  }
+  if (code == 'KeyF') {
+    flipping = true;
+    ball.rotation.x = ball.rotation.x + 0.05;
+  }
+    if (code == 'KeyC' && cartwheeling == true) {
+    cartwheeling = false;
+  }
+  if (code == 'KeyF' && flipping == true) {
+    flipping = false;
+  }
+});
+
+document.addEventListener('keyup', function(event) {
+  var code = event.code;
+  if (code == 'KeyI') wlkngf = false;
+  if (code == 'KeyK') wlkngb = false;
+  if (code == 'KeyL') wlkngl = false;
+  if (code == 'KeyJ') wlkngr = false;
+});
+
+var marker = new THREE.Object3D();
+marker.add(camera);
+scene.add(marker);
+marker.add(ball);
+
+
+//--------------------------------------------------------------
+//--------------------------------------------------------------
+
+
+function spwnp(x, y, z) {
+var pshape = new THREE.SphereGeometry(100, 100, 100);
+var pcover = new THREE.MeshNormalMaterial({color:'yellow'});
+var p = new THREE.Mesh(pshape, pcover);
+p.position.set((Math.random()*x)-683, (Math.random()*y)-384, (Math.random()*z)-700);
+scene.add(p);
+}
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+spwnp(1000, 1000, 1000);
+
+function spwnt (x, z) {
+  var trunk = new THREE.Mesh(
+    new THREE.CylinderGeometry(50,50,200),
+    new THREE.MeshBasicMaterial({color: 'sienna'}));
+    var top = new THREE.Mesh(
+      new THREE.SphereGeometry(150),
+      new THREE.MeshBasicMaterial({color: 'forestgreen'}));
+      top.position.y = 175;
+      trunk.add(top);
+      trunk.position.set(x, -75, z);
+      scene.add(trunk);
+}
+spwnt(400, 100);
+spwnt(-200, 200);
+spwnt(400, 300);
+spwnt(-100, 500);
+
+  // Now, show what the camera sees on the screen:
+  renderer.render(scene, camera);
+</script>
+
+
