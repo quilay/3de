@@ -1,4 +1,4 @@
-ds<body></body>
+<body></body>
 <script src="/three.js"></script>
 <script src="/tween.js"></script>
 <script src="/controls/FlyControls.js"></script>
@@ -25,28 +25,62 @@ ds<body></body>
 // controls.addEventListener( 'keyUp', render );
   // ******** START CODING ON THE NEXT LINE ********
 var direction;
-var tween;
+var ldirection;
 var wlkngl = false;
 var wlkngr = false;
 var wlkngf = false;
 var wlkngb = false;
 var position;
 
+document.addEventListener('keydown', function(event) {
+  var code = event.code;
+  if (code == 'KeyJ') {
+    marker.position.x = marker.position.x - 10;
+    wlkngr = true;
+  }
+  if (code == 'KeyL') {
+    marker.position.x = marker.position.x + 10;
+    wlkngl = true;
+  }
+  if (code == 'KeyI') {
+    marker.position.z = marker.position.z - 10;
+    wlkngf = true;
+  }
+  if (code == 'KeyK') {
+    marker.position.z = marker.position.z + 10;
+    wlkngb = true;
+  }
+
+  if (code == 'KeyC' && cartwheeling == false) {
+    cartwheeling = true;
+  }
+  if (code == 'KeyF' && flipping == false) {
+    flipping = true;
+  }
+  
+    if (code == 'KeyC' && cartwheeling == true) {
+    cartwheeling = false;
+  }
+  if (code == 'KeyF' && flipping == true) {
+    flipping = false;
+  }
+});
+
 function turn() {
-  var tween = new TWEEN.Tween(ball.rotation);
+
   if (wlkngf == true) direction = Math.PI;
   if (wlkngb == true) direction = 0;
   if (wlkngl == true) direction = Math.PI/2;
-  if (wlkngr == true) direction = -Math.PI/2
-  /*
+  if (wlkngr == true) direction = -Math.PI/2;
+  if (wlkng() == false) direction = direction;
+
+  if (ldirection == direction) return;
+
+  ldirection = direction;
   var tween = new TWEEN.Tween(ball.rotation);
-  tween.to({y:Math.PI;}, 500);
-  tween.to({y:0}, 500);
-  tween.to({y:direction}, 500);
-  tween.to({y:direction}, 500);
   tween.to({y:direction}, 500);
   tween.start();
-  */
+
 }
 
 function wlkng() {
@@ -113,10 +147,7 @@ function walk() {
   leftfoot.position.z = position;
   
   ball.rotation.y = direction;
-  
-  tween = new TWEEN.Tween(ball.rotation);
-  tween.to({y: direction}, 1000);
-  tween.start();
+
 }
 
 function nwalk() {
@@ -144,40 +175,6 @@ function animate() {
 }
 
 animate();
-
-document.addEventListener('keydown', function(event) {
-  var code = event.code;
-  if (code == 'KeyJ') {
-    marker.position.x = marker.position.x - 10;
-    wlkngr = true;
-  }
-  if (code == 'KeyL') {
-    marker.position.x = marker.position.x + 10;
-    wlkngl = true;
-  }
-  if (code == 'KeyI') {
-    marker.position.z = marker.position.z - 10;
-    wlkngf = true;
-  }
-  if (code == 'KeyK') {
-    marker.position.z = marker.position.z + 10;
-    wlkngb = true;
-  }
-
-  if (code == 'KeyC' && cartwheeling == false) {
-    cartwheeling = true;
-  }
-  if (code == 'KeyF' && flipping == false) {
-    flipping = true;
-  }
-  
-    if (code == 'KeyC' && cartwheeling == true) {
-    cartwheeling = false;
-  }
-  if (code == 'KeyF' && flipping == true) {
-    flipping = false;
-  }
-});
 
 document.addEventListener('keypress', function(event) {
   var code = event.code;
@@ -256,5 +253,3 @@ spwnt(-100, 500);
   // Now, show what the camera sees on the screen:
   renderer.render(scene, camera);
 </script>
-
-
