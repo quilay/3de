@@ -1,4 +1,7 @@
 //you need to run this on www.code3dgames.com/3de/
+//use I J K L keys to move
+//use the arrow keys to rotate the camera
+//There's still room for improvement, I'll probably just continue this next semester
 <body></body>
 <script src="/three.js"></script>
 <script src="/tween.js"></script>
@@ -109,12 +112,23 @@ ball.add(leftfoot);
 ball.add(rightfoot);
 var cartwheeling;
 var flipping;
+var jumping;
+var hi = 0;
+/*
 function acros() {
   if (cartwheeling == true) {
   ball.rotation.z = ball.rotation.z + 0.05;
 }
  if (flipping == true) {
   ball.rotation.x = ball.rotation.x + 0.05;
+}
+if (jumping == true) {
+  if (hi < 20) {
+  marker.position.y = marker.position.y + hi;
+  }
+  if (hi > 20) { 
+  marker.position.y = marker.position.y - hi;
+  }
 }
   if (cartwheeling == false) {
   ball.rotation.z = 0;
@@ -123,6 +137,7 @@ function acros() {
   ball.rotation.x = 0;
 }
  }
+ */
 function walk() {
   var speed = 10;
   var size = 100;
@@ -148,7 +163,7 @@ function isColliding() {
   if (intersects.length > 0) return true;
   return false;
 }
-var g = new THREE.Mesh(new THREE.CircleGeometry(10000), new THREE.MeshBasicMaterial({color: '#7CFC00'}));
+var g = new THREE.Mesh(new THREE.CircleGeometry(100000), new THREE.MeshBasicMaterial({color: 'forestgreen'}));
 g.rotation.x = -Math.PI/2;
 g.position.y = -185;
 scene.add(g);
@@ -156,7 +171,7 @@ function animate() {
   TWEEN.update();
   requestAnimationFrame(animate);
   var delta = clock.getDelta();
-  acros();
+  //acros();
   controls.update(delta);
   renderer.render(scene, camera);
   if (wlkng() == true) {
@@ -182,36 +197,24 @@ document.addEventListener('keydown', function(event) {
   if (code == 'KeyK') {
       wlkngb = true;
   }
-  if (code == 'KeyC' && cartwheeling == false) {
-    cartwheeling = true;
-  }
-  if (code == 'KeyF' && flipping == false) {
-    flipping = true;
-  }
-    if (code == 'KeyC' && cartwheeling == true) {
-    cartwheeling = false;
-  }
-  if (code == 'KeyF' && flipping == true) {
-    flipping = false;
-  }
-});
-document.addEventListener('keypress', function(event) {
-  var code = event.code;
+  /*
   if (code == 'KeyC') {
-    cartwheeling = true;
-    ball.rotation.z = ball.rotation.z + 0.05;
+    //cartwheeling = true;
+      ball.rotation.z = ball.rotation.z + Math.PI;
   }
   if (code == 'KeyF') {
     flipping = true;
-    ball.rotation.x = ball.rotation.x + 0.05;
   }
-    if (code == 'KeyC' && cartwheeling == true) {
-    cartwheeling = false;
+  if (code == 'KeyV') {
+    jumping = true
   }
-  if (code == 'KeyF' && flipping == true) {
-    flipping = false;
-  }
+  */
 });
+function rint(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 document.addEventListener('keyup', function(event) {
   var code = event.code;
   if (code == 'KeyI') wlkngf = false;
@@ -223,43 +226,36 @@ var marker = new THREE.Object3D();
 marker.add(camera);
 scene.add(marker);
 marker.add(ball);
-function spwnp(x, y, z) {
+function spwnp() {
 var pshape = new THREE.SphereGeometry(100, 100, 100);
 var pcover = new THREE.MeshNormalMaterial({color:'yellow'});
 var p = new THREE.Mesh(pshape, pcover);
-p.position.set((Math.random()*x)-683, (Math.random()*y)-384, (Math.random()*z)-700);
+var x = rint(-10000, 10000);
+var y = rint(750, 5000);
+var z = rint(-10000, 10000);
+p.position.set(x, y, z);
 scene.add(p);
 }
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-spwnp(1000, 1000, 1000);
-function spwnt (x, z) {
-  var boundary = new THREE.Mesh(new THREE.CircleGeometry(300), new THREE.MeshBasicMaterial({color: 'forestgreen'}));
-  var trunk = new THREE.Mesh(new THREE.CylinderGeometry(50,50,200),new THREE.MeshBasicMaterial({color: 'sienna'}));
-  var top = new THREE.Mesh(new THREE.SphereGeometry(150),new THREE.MeshBasicMaterial({color: 'forestgreen'}));
-      top.position.y = 175;
+for (var i = 0; i < 50; i++) {
+spwnp();
+}
+function spwnt () {
+  var boundary = new THREE.Mesh(new THREE.CircleGeometry(200), new THREE.MeshBasicMaterial({color: 'forestgreen'}));
+  var trunk = new THREE.Mesh(new THREE.CylinderGeometry(100,100,600),new THREE.MeshBasicMaterial({color: 'sienna'}));
+  var top = new THREE.Mesh(new THREE.SphereGeometry(300),new THREE.MeshBasicMaterial({color: 'forestgreen'}));
+  var tx = rint(-10000, 10000);
+  var tz = rint(-10000, 10000);
+      top.position.y = 375;
       trunk.add(top);
-      trunk.position.set(x, -75, z);
-      boundary.position.y = -100;
+      trunk.position.set(tx, 50, tz);
+      boundary.position.y = -250;
       boundary.rotation.x = -Math.PI/2;
       trunk.add(boundary);
       scene.add(trunk);
-      
-     notAllowed.push(boundary);   
+      notAllowed.push(boundary);   
 }
-spwnt(Math.random()*1000, Math.random()*1000);
-spwnt(Math.random()*1000, Math.random()*1000);
-spwnt(Math.random()*1000, Math.random()*1000);
-spwnt(Math.random()*1000, Math.random()*1000);
+for (var ti = 0; ti < 50; ti++) {
+spwnt();
+}
 renderer.render(scene, camera);
 </script>
