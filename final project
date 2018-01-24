@@ -23,13 +23,7 @@ var wlkngf = false;
 var wlkngb = false;
 var position;
 var notAllowed = [];
-function isColliding() {
-  var vector = new THREE.Vector3(0, -1, 0);
-  var raycaster = new THREE.Raycaster(marker.position, vector);
-  var intersects = raycaster.intersectObjects(notAloowed);
-  if (intersects.length > 0) return true;
-  return false;
-}
+
 function turn() {
   if (wlkngf == true) {
     direction = Math.PI;
@@ -54,19 +48,39 @@ function turn() {
 }
 function wlkng() {
   if (wlkngf == true) {
-    marker.position.z = marker.position.z - 2.5;
+    if (isColliding() == true) {
+      marker.position.x = marker.position.x + 2.5;
+    }
+    if (isColliding() == false) {
+      marker.position.z = marker.position.z - 2.5;
+    }
     return true;
   }
   if (wlkngb == true) {
-    marker.position.z = marker.position.z + 2.5;
+    if (isColliding() == true) {
+      marker.position.x = marker.position.x - 2.5;
+    }
+    if (isColliding() == false) {
+      marker.position.z = marker.position.z + 2.5;
+    }
     return true;
   }
   if (wlkngl == true) {
-    marker.position.x = marker.position.x + 2.5;
+    if (isColliding() == true) {
+      marker.position.z = marker.position.z + 2.5;
+    }
+    if (isColliding() == false) {
+      marker.position.x = marker.position.x + 2.5;
+    }
     return true;
   }
   if (wlkngr == true) {
-    marker.position.x = marker.position.x - 2.5;
+    if (isColliding() == true) {
+      marker.position.z = marker.position.z - 2.5;
+    }
+    if (isColliding() == false) {
+      marker.position.x = marker.position.x - 2.5;
+    }
     return true;
   }
   return false;
@@ -127,6 +141,17 @@ function nwalk() {
   rightfoot.position.z = -position;
   leftfoot.position.z = position;
 }
+function isColliding() {
+  var vector = new THREE.Vector3(0, -1, 0);
+  var raycaster = new THREE.Raycaster(marker.position, vector);
+  var intersects = raycaster.intersectObjects(notAllowed);
+  if (intersects.length > 0) return true;
+  return false;
+}
+var g = new THREE.Mesh(new THREE.CircleGeometry(10000), new THREE.MeshBasicMaterial({color: '#7CFC00'}));
+g.rotation.x = -Math.PI/2;
+g.position.y = -185;
+scene.add(g);
 function animate() {
   TWEEN.update();
   requestAnimationFrame(animate);
@@ -146,16 +171,16 @@ animate();
 document.addEventListener('keydown', function(event) {
   var code = event.code;
   if (code == 'KeyJ') {
-    wlkngr = true;
+      wlkngr = true;
   }
   if (code == 'KeyL') {
-    wlkngl = true;
+      wlkngl = true;
   }
   if (code == 'KeyI') {
-    wlkngf = true;
+      wlkngf = true;
   }
   if (code == 'KeyK') {
-    wlkngb = true;
+      wlkngb = true;
   }
   if (code == 'KeyC' && cartwheeling == false) {
     cartwheeling = true;
@@ -198,7 +223,6 @@ var marker = new THREE.Object3D();
 marker.add(camera);
 scene.add(marker);
 marker.add(ball);
-/*
 function spwnp(x, y, z) {
 var pshape = new THREE.SphereGeometry(100, 100, 100);
 var pcover = new THREE.MeshNormalMaterial({color:'yellow'});
@@ -219,31 +243,23 @@ spwnp(1000, 1000, 1000);
 spwnp(1000, 1000, 1000);
 spwnp(1000, 1000, 1000);
 spwnp(1000, 1000, 1000);
-*/
 function spwnt (x, z) {
-  var boundary = new THREE.Mesh(new THREE.CircleGeometry(300), new THREE.MeshNormalMaterial());
+  var boundary = new THREE.Mesh(new THREE.CircleGeometry(300), new THREE.MeshBasicMaterial({color: 'forestgreen'}));
   var trunk = new THREE.Mesh(new THREE.CylinderGeometry(50,50,200),new THREE.MeshBasicMaterial({color: 'sienna'}));
   var top = new THREE.Mesh(new THREE.SphereGeometry(150),new THREE.MeshBasicMaterial({color: 'forestgreen'}));
       top.position.y = 175;
       trunk.add(top);
       trunk.position.set(x, -75, z);
       boundary.position.y = -100;
-  boundary.rotation.x = -Math.PI/2;
+      boundary.rotation.x = -Math.PI/2;
       trunk.add(boundary);
       scene.add(trunk);
       
      notAllowed.push(boundary);   
 }
-/*
-var boundary = new THREE.Mesh(new THREE.CircleGeometry(300), new THREE.MeshNormalMaterial());
-notAllowed.push(boundary);
-boundary.position.y = -100;
-boundary.rotation.x = -Math.PI/2;
-trunk.add(boundary);
-*/
-spwnt(600, 100);
-spwnt(-600, 200);
-spwnt(600, 300);
-spwnt(-600, 500);
-  renderer.render(scene, camera);
+spwnt(Math.random()*1000, Math.random()*1000);
+spwnt(Math.random()*1000, Math.random()*1000);
+spwnt(Math.random()*1000, Math.random()*1000);
+spwnt(Math.random()*1000, Math.random()*1000);
+renderer.render(scene, camera);
 </script>
